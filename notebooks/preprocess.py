@@ -44,7 +44,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random
 train = pd.DataFrame({'label': y_train, 'text': X_train})
 test = pd.DataFrame({'label': y_test, 'text': X_test})
 
-test.to_csv('../data/test_orig.txt', sep='\t', index=False, header=False)
-train.to_csv('../data/train_orig.txt', sep='\t', index=False, header=False)
+test.to_csv('../data/test.txt', sep='\t', index=False, header=False)
+train.to_csv('../data/train.txt', sep='\t', index=False, header=False)
 
 
