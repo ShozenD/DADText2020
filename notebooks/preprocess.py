@@ -33,6 +33,8 @@ def parse(x):
     x = re.sub("『|』","",x)
     x = re.sub("（.*?）","",x)
     x = re.sub("\[.*?\]","",x)
+    x = re.sub("[0-9]+","0",x)
+    x = re.sub("・","、",x)
     return x
 
 
@@ -44,8 +46,8 @@ wiki.head(10)
 wiki['lenght'] = wiki['Field1'].map(lambda x: len(x))
 uncy['lenght'] = uncy['Field1'].map(lambda x: len(x))
 
-wiki = wiki[wiki['lenght'] > 50]
-uncy = uncy[uncy['lenght'] > 50]
+wiki = wiki[wiki['lenght'] > 100]
+uncy = uncy[uncy['lenght'] > 100]
 
 wiki['label'] = 1
 uncy['label'] = 0
@@ -70,5 +72,7 @@ test.label.mean()
 train.label.mean()
 
 test
+
+test[test['label'] == 0]
 
 
