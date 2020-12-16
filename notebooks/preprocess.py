@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ---
 # jupyter:
 #   jupytext:
@@ -28,11 +29,17 @@ uncy.head(10)
 # Remove new line character
 def parse(x):
     x = re.sub("\n","", x)
+    x = re.sub("「|」","",x)
+    x = re.sub("『|』","",x)
+    x = re.sub("（.*?）","",x)
+    x = re.sub("\[.*?\]","",x)
     return x
 
 
 wiki['Field1'] = wiki['Field1'].map(lambda x: parse(x))
 uncy['Field1'] = wiki['Field1'].map(lambda x: parse(x))
+
+wiki.head(10)
 
 wiki['lenght'] = wiki['Field1'].map(lambda x: len(x))
 uncy['lenght'] = uncy['Field1'].map(lambda x: len(x))
@@ -51,12 +58,17 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random
 train = pd.DataFrame({'label': y_train, 'text': X_train})
 test = pd.DataFrame({'label': y_test, 'text': X_test})
 
+len(train)
+
+len(test)
+
 test.to_csv('../data/test.txt', sep='\t', index=False, header=False)
 train.to_csv('../data/train.txt', sep='\t', index=False, header=False)
 
-np.mean(uncy.Field1.map(lambda x: len(x)))
+test.label.mean()
 
-for line in uncy.Field1:
-    print(line)
+train.label.mean()
+
+test
 
 
