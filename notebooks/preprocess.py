@@ -14,6 +14,7 @@
 
 import re
 import pandas as pd
+import numpy as np
 from sklearn.model_selection import train_test_split
 
 wiki = pd.read_csv('../data/wikipedia.csv')
@@ -33,6 +34,12 @@ def parse(x):
 wiki['Field1'] = wiki['Field1'].map(lambda x: parse(x))
 uncy['Field1'] = wiki['Field1'].map(lambda x: parse(x))
 
+wiki['lenght'] = wiki['Field1'].map(lambda x: len(x))
+uncy['lenght'] = uncy['Field1'].map(lambda x: len(x))
+
+wiki = wiki[wiki['lenght'] > 50]
+uncy = uncy[uncy['lenght'] > 50]
+
 wiki['label'] = 1
 uncy['label'] = 0
 
@@ -46,5 +53,10 @@ test = pd.DataFrame({'label': y_test, 'text': X_test})
 
 test.to_csv('../data/test.txt', sep='\t', index=False, header=False)
 train.to_csv('../data/train.txt', sep='\t', index=False, header=False)
+
+np.mean(uncy.Field1.map(lambda x: len(x)))
+
+for line in uncy.Field1:
+    print(line)
 
 
