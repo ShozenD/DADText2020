@@ -18,43 +18,45 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-wiki = pd.read_csv('../data/wikipedia.csv')
-uncy = pd.read_csv('../data/uncyclopedia.csv')
+yahoo1 = pd.read_csv('../data/yahoo_news.csv',index_col=False)
+yahoo2 = pd.read_csv('../data/yahoo_news_2.csv',index_col=False)
+yahoo3 = pd.read_csv('../data/yahoo_news_3.csv',index_col=False)
+yahoo4 = pd.read_csv('../data/yahoo_news_4.csv',index_col=False)
 
-wiki.head(10)
+yahoo = pd.concat([yahoo1,yahoo2,yahoo3,yahoo4])
+yahoo = yahoo.reset_index(drop=True)
+yahoo.tail(10)
 
-uncy.head(10)
-
-
+# +
 # Remove new line character
+to_hankaku = {chr(0xFF01 + i): chr(0x21 + i) for i in range(94)}
+
 def parse(x):
-    x = re.sub("\n","", x)
-    x = re.sub("「|」","",x)
-    x = re.sub("『|』","",x)
-    x = re.sub("（.*?）","",x)
-    x = re.sub("\[.*?\]","",x)
-    x = re.sub("[0-9]+","0",x)
-    x = re.sub("・","、",x)
+    x = re.sub('[『』〝〟【】「」“”．《》＜＞\[\]〔〕]','',x) #『』を除去
+    x = re.sub('[&＆・×]','と', x)
+    x = re.sub('〜','から',x)
+    x = re.sub('　','',x) # 無駄な空白を除去
+    x = x.translate(str.maketrans(to_hankaku)) # 全角→半角変換
+    x = x.lower() # 大文字→小文字
+    
+    x = re.sub('[0-9]+','0',x) # 番号を全て0にする
+    x = re.sub('[!?]','。',x)
+    x = re.sub('…','。',x)
+    x = re.sub('。+','。',x)
+    
     return x
 
 
-wiki['Field1'] = wiki['Field1'].map(lambda x: parse(x))
-uncy['Field1'] = wiki['Field1'].map(lambda x: parse(x))
+# -
 
-wiki.head(10)
+yahoo['Title'] = yahoo['Title'].map(lambda x: parse(x)).values
 
-wiki['lenght'] = wiki['Field1'].map(lambda x: len(x))
-uncy['lenght'] = uncy['Field1'].map(lambda x: len(x))
+yahoo.head(50)
 
-wiki = wiki[wiki['lenght'] > 100]
-uncy = uncy[uncy['lenght'] > 100]
+yahoo = yahoo.loc[:,['label','Title']]
+yahoo.drop_duplicates()
 
-wiki['label'] = 1
-uncy['label'] = 0
-
-data = pd.concat([wiki, uncy])
-
-y, X = data['label'], data['Field1']
+y, X = yahoo['label'], yahoo['Title']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
 
 train = pd.DataFrame({'label': y_train, 'text': X_train})
@@ -70,9 +72,3 @@ train.to_csv('../data/train.txt', sep='\t', index=False, header=False)
 test.label.mean()
 
 train.label.mean()
-
-test
-
-test[test['label'] == 0]
-
-
