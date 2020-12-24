@@ -22,8 +22,11 @@ yahoo1 = pd.read_csv('../data/yahoo_news.csv',index_col=False)
 yahoo2 = pd.read_csv('../data/yahoo_news_2.csv',index_col=False)
 yahoo3 = pd.read_csv('../data/yahoo_news_3.csv',index_col=False)
 yahoo4 = pd.read_csv('../data/yahoo_news_4.csv',index_col=False)
+yahoo5 = pd.read_csv('../data/yahoo_news_5.csv',index_col=False)
+yahoo6 = pd.read_csv('../data/yahoo_news_6.csv',index_col=False)
+yahoo7 = pd.read_csv('../data/yahoo_news_7.csv',index_col=False)
 
-yahoo = pd.concat([yahoo1,yahoo2,yahoo3,yahoo4])
+yahoo = pd.concat([yahoo1,yahoo2,yahoo3,yahoo4,yahoo5,yahoo6,yahoo7])
 yahoo = yahoo.reset_index(drop=True)
 yahoo.tail(10)
 
@@ -32,7 +35,7 @@ yahoo.tail(10)
 to_hankaku = {chr(0xFF01 + i): chr(0x21 + i) for i in range(94)}
 
 def parse(x):
-    x = re.sub('[『』〝〟【】「」“”．《》＜＞\[\]〔〕]','',x) #『』を除去
+    x = re.sub('[『』〝〟【】「」“”．《》＜＞\[\]〔〕＝]','',x) #『』を除去
     x = re.sub('[&＆・×]','と', x)
     x = re.sub('〜','から',x)
     x = re.sub('　','',x) # 無駄な空白を除去
